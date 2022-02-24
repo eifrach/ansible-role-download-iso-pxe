@@ -1,0 +1,91 @@
+- name: Extract files from a ISO to TFTP
+  iso_extract:
+    image:  "{{ WORKDIR }}/{{ ISO_NAME }}"
+    dest: "{{ HTTP_DIR }}"
+    files:
+    - images/pxeboot/initrd.img
+    - images/pxeboot/vmlinuz
+  become: yes
+  tags: extract
+
+- name: Extract files from a ISO To Workdir
+  iso_extract:
+    image:  "{{ WORKDIR }}/{{ ISO_NAME }}"
+    dest: "{{ WORKDIR }}"
+    files:
+    - images/ignition.img
+    - images/efiboot.img
+    - isolinux/isolinux.cfg
+  become: yes
+  tags: extract
+
+- name: Create Mount point 
+  file:
+    path: "{{ MNT_EFIBOOT }}"
+    state: directory
+    owner: root
+    group: root
+  become: yes
+  tags: extract
+
+- name: Mount efiboot image
+  mount:
+    path: "{{ MNT_EFIBOOT }}"
+    src: "{{ WORKDIR }}/efiboot.img"
+    fstype: vfat
+    state: mounted
+  become: yes
+  tags: extract
+
+- name: "[ARM] Copy boot files to TFTP "
+  copy:
+    src: "{{ MNT_EFIBOOT }}/EFI/BOOT/{{ item }}"
+    dest: "{{ TFTP_DIR }}/{{ item }}"
+    remote_src: true
+    owner: root
+    group: root
+  become: yes
+  loop:
+    - BOOTAA64.EFI
+    - grubaa64.efi
+  when: ARCH == "arm"
+  tags: extract
+
+- name: "[x86] Copy boot files to TFTP "
+  copy:
+    src: "{{ MNT_EFIBOOT }}/EFI/BOOT/{{ item }}"
+    dest: "{{ TFTP_DIR }}/{{ item }}"
+    remote_src: true
+    owner: root
+    group: root
+  become: yes
+  loop:
+    - BOOTX64.EFI
+    - grubx64.efi
+  when: ARCH == "x86"
+  tags: extract
+
+- name: Release Mount
+  mount:
+    path: "{{ MNT_EFIBOOT }}"
+    state: absent
+  tags: extract
+
+- name: "Downloading rootfs.img"
+  shell: |
+    URL=$(cat {{ WORKDIR }}/isolinux.cfg  | grep -o 'coreos.live.rootfs_url=.*' | cut -f2- -d"=")
+    curl $URL --output  {{ HTTP_DIR }}/rootfs.img
+    rm -f {{ WORKDIR  }}/isolinux.cfg 
+  become: yes
+  tags: extract
+
+- name: Creating Ignition files
+  shell: |
+    CONFIG={{ HTTP_DIR }}/config.ign
+    echo '{' >  $CONFIG
+    zcat  {{ WORKDIR }}/ignition.img | sed '1d; $d'  >>  $CONFIG
+    echo '}' >> $CONFIG
+    chown -R apache: {{ HTTP_DIR }}/
+    rm -rf {{ WORKDIR }}/ignition.img
+  become: yes
+  tags: extract

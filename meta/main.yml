@@ -1,0 +1,29 @@
+
+galaxy_info:
+  author: Eran Ifrach
+  description: Download ISO from Assisted installer into PXE boot
+  company: RedHat
+
+  version: 0.1.0
+
+  license:
+    - Apache-2.0
+
+  min_ansible_version: 2.0
+
+  role_name: download-iso-pxe
+
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: RHEL
+      versions:
+        - 8.4+
+
+  readme: README.md
+
+  galaxy_tags:
+    - pxe
+    - openshift
+    - Assisted-installer
