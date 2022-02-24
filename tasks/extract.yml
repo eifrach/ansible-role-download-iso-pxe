@@ -69,6 +69,7 @@
   mount:
     path: "{{ MNT_EFIBOOT }}"
     state: absent
+  become: true
   tags: extract
 
 - name: Get infra-env id by cluster id
