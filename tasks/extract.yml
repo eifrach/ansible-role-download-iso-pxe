@@ -1,7 +1,7 @@
 - name: Extract files from a ISO to TFTP
   iso_extract:
     image:  "{{ WORKDIR }}/{{ ISO_NAME }}"
-    dest: "{{ HTTP_DIR }}"
+    dest: "{{ TFTP_DIR }}"
     files:
     - images/pxeboot/initrd.img
     - images/pxeboot/vmlinuz
