@@ -23,3 +23,6 @@ HTTP_DIR: "/var/www/html/pxe"
 
 ### Mount Point for boot images
 MNT_EFIBOOT: "/mnt/efiboot"
+
+### GRUB HTTP SERVER URL
+# HTTP_URL: ""

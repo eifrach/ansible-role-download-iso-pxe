@@ -113,3 +113,10 @@
     rm -rf {{ WORKDIR }}/ignition.img
   become: yes
   tags: extract
+
+- name: Create grub.cfg
+  template:
+    src: grub.cfg.j2
+    dest: "{{ TFTP_DIR }}/grub.cfg"
+  become: yes
+  tags: extract
