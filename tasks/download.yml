@@ -4,6 +4,18 @@
     API_URL: "{{ URL }}/api/assisted-install/v2"
   tags: download
 
+- name: Change cluster status to Adding Hosts
+  uri:
+    url: "${{ API_URL }}/clusters/{{ CLUSTER_ID  }}/actions/allow-add-workers"
+    method: POST
+    headers: 
+      Accept: application/json
+      Content-Type: application/json
+    follow_redirects: all
+    return_content: yes
+    status_code: "202"
+  tags: download
+
 - name: Get infra-env id by cluster id
   uri:
     url: "{{ API_URL }}/infra-envs?cluster_id={{ CLUSTER_ID  }}"
@@ -34,7 +46,6 @@
     status_code: "200"
   register: _day2_result
   tags: download
-
 
 - name: Creating working dir
   file:

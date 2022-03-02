@@ -9,7 +9,7 @@
 # ARCH
 ARCH: arm
 
-# Name of the downlaod ISO
+# Name of the downlaoded ISO
 ISO_NAME: "discovery_image.iso"
 
 # Work dir
@@ -25,4 +25,6 @@ HTTP_DIR: "/var/www/html/pxe"
 MNT_EFIBOOT: "/mnt/efiboot"
 
 ### GRUB HTTP SERVER URL
+### optional set the url for downloading the kernel files
+### default to ansible host IP address.
 # HTTP_URL: ""
