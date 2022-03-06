@@ -19,7 +19,7 @@
 
 - name: Change cluster status to Adding Hosts
   uri:
-    url: "${{ API_URL }}/clusters/{{ CLUSTER_ID  }}/actions/allow-add-workers"
+    url: "{{ API_URL }}/clusters/{{ CLUSTER_ID  }}/actions/allow-add-workers"
     method: POST
     headers: 
       Accept: application/json
