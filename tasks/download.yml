@@ -4,6 +4,19 @@
     API_URL: "{{ URL }}/api/assisted-install/v2"
   tags: download
 
+- name: Get Cluster status
+  uri:
+    url: "{{ API_URL }}/clusters/{{ CLUSTER_ID }}"
+    method: GET
+    headers: 
+      Accept: application/json
+      Content-Type: application/json
+    follow_redirects: all
+    return_content: yes
+    status_code: "200"
+  tags: download
+  register: _cluster_status
+
 - name: Change cluster status to Adding Hosts
   uri:
     url: "${{ API_URL }}/clusters/{{ CLUSTER_ID  }}/actions/allow-add-workers"
@@ -15,6 +28,7 @@
     return_content: yes
     status_code: "202"
   tags: download
+  when: _cluster_status.json.status != "adding-hosts"
 
 - name: Get infra-env id by cluster id
   uri:
