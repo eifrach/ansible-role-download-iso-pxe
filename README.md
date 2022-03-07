@@ -3,8 +3,10 @@
 This role is for Asissted install day2 deployments.
 Giving an exsisting cluster, add's worker node via API
 
-This role will create a Day2 cluster on AI and will download and extract ISO into HTTP, TFTP folders.
+This Role will transform the cluster to Day2 and will download and extract ISO into HTTP, TFTP folders.
 Generate `grub.cfg` accidentally
+
+> note: After transfomation the UI will no longer shows the current cluster
 
 ### **Requirements** 
 ---
@@ -15,13 +17,14 @@ Generate `grub.cfg` accidentally
 ### **Mandatory Values**
 ---
 ```yaml
-# Assisted installer URL
-URL: "http://< Address >:< PORT>"
-# Cluster installed clusters UUID
-CLUSTER_ID: "< CLUSTER UUID >"
-# architecture deployment type
-# allowed values arm, x86
-# default arm
+### Assisted installer URL
+URL: http://< Address >:< PORT>
+### Cluster installed clusters UUID
+CLUSTER_ID: < CLUSTER UUID >
+
+### architecture deployment type
+### allowed values arm, x86
+### default arm
 ARCH: "arm"
 ```
 
@@ -57,8 +60,30 @@ finally run the playbook
 ansible-playbook -i localhost, playbook.yaml
 ```
 
+### **Tags**
+---
+Downlaod only
+```shell
+ansible-playbook -i localhost, playbook.yaml --tags download
+### Default downlaod location
+### /tmp/download-iso-pxe/discovery_image.iso
+```
+
+Extract files
+```shell
+ansible-playbook -i localhost, playbook.yaml --tags extract
+### this will look for the iso in a default location and name
+### set you own locatio
+### Name of the downlaoded ISO
+# ISO_NAME: "discovery_image.iso"
+### Work dir
+# WORKDIR: "/tmp/download-iso-pxe"
+```
+
 
 ### **Vars and Defaults**
+
+---
 
 ```yaml
 
